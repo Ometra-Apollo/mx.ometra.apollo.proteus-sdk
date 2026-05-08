@@ -11,8 +11,30 @@ use Ometra\Caronte\Support\CaronteApplicationToken;
 use Ometra\Caronte\Support\CaronteHttpClient;
 use RuntimeException;
 
+/**
+ * Cliente HTTP de bajo nivel para la API de Proteus.
+ *
+ * Extiende CaronteHttpClient para añadir la resolución de URL base desde
+ * la configuración de Proteus y la inyección de cabeceras de autenticación
+ * de usuario (X-User-Token + X-Tenant-Id) además de las de aplicación.
+ *
+ * Los payloads que contienen UploadedFile se envían automáticamente
+ * como peticiones multipart.
+ */
 class ProteusApiClient extends CaronteHttpClient
 {
+    /**
+     * Realiza una petición autenticada como usuario.
+     *
+     * Envía X-Application-Token, X-User-Token y, si hay un TenantContext
+     * activo, X-Tenant-Id.
+     *
+     * @param  string  $method    Método HTTP (GET, POST, PUT, PATCH, DELETE).
+     * @param  string  $endpoint  Ruta relativa del endpoint (sin barra inicial).
+     * @param  array<string, mixed>  $payload  Cuerpo de la petición.
+     * @param  array<string, mixed>  $query    Parámetros de query string.
+     * @return array<string, mixed>
+     */
     public function userRequest(
         string $method,
         string $endpoint,
@@ -32,16 +54,41 @@ class ProteusApiClient extends CaronteHttpClient
         return $this->request($method, $endpoint, $payload, $query, $headers);
     }
 
+    /**
+     * Devuelve la URL base de la API de Proteus desde la configuración.
+     *
+     * @return string
+     */
     protected function getBaseUrl(): string
     {
         return (string) config('proteus.base_url');
     }
 
+    /**
+     * Genera un token de aplicación Caronte.
+     *
+     * @return string
+     */
     protected function makeApplicationToken(): string
     {
         return CaronteApplicationToken::make();
     }
 
+    /**
+     * Ejecuta la petición HTTP y devuelve la respuesta parseada.
+     *
+     * Construye la URL completa, selecciona multipart si el payload contiene
+     * archivos, despacha la petición y delega el parseo al método de la clase padre.
+     *
+     * @param  string  $method    Método HTTP en minúsculas o mayúsculas.
+     * @param  string  $endpoint  Ruta relativa del endpoint.
+     * @param  array<string, mixed>  $payload  Cuerpo de la petición.
+     * @param  array<string, mixed>  $query    Parámetros de query string.
+     * @param  array<string, string>  $headers  Cabeceras HTTP adicionales.
+     * @return array<string, mixed>
+     *
+     * @throws CaronteApiException Si el método HTTP no está soportado.
+     */
     protected function request(
         string $method,
         string $endpoint,
@@ -81,6 +128,11 @@ class ProteusApiClient extends CaronteHttpClient
         return $this->parseResponse($response);
     }
 
+    /**
+     * Obtiene el tenant ID del TenantContext activo, si existe.
+     *
+     * @return string|null  El ID del tenant o null si no hay contexto activo.
+     */
     private function tenantId(): ?string
     {
         if (!app()->bound(TenantContext::class)) {
@@ -94,6 +146,14 @@ class ProteusApiClient extends CaronteHttpClient
         return is_string($tenantId) && trim($tenantId) !== '' ? trim($tenantId) : null;
     }
 
+    /**
+     * Determina si el payload debe enviarse como multipart.
+     *
+     * Devuelve true si algún valor del payload (o de arrays anidados)
+     * es una instancia de UploadedFile o un resource.
+     *
+     * @param  array<string, mixed>  $payload
+     */
     private function shouldUseMultipart(array $payload): bool
     {
         foreach ($payload as $value) {
@@ -187,6 +247,14 @@ class ProteusApiClient extends CaronteHttpClient
         ];
     }
 
+    /**
+     * Convierte un valor escalar a string para incluirlo en un payload multipart.
+     *
+     * Los booleanos se convierten a '1' o '0'; null se convierte a cadena vacía.
+     *
+     * @param  mixed  $value
+     * @return string
+     */
     private function scalarPartContents(mixed $value): string
     {
         if (is_bool($value)) {
