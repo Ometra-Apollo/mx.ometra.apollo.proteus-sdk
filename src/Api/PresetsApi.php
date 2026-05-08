@@ -2,53 +2,49 @@
 
 namespace Ometra\Apollo\Proteus\Api;
 
-use Ometra\Caronte\Api\BaseApiClient;
-use Ometra\Apollo\Proteus\Api\Concerns\ResolvesProteusTenant;
-
-class PresetsApi extends BaseApiClient
+class PresetsApi
 {
-    use ResolvesProteusTenant;
+    public function __construct(
+        protected ProteusApiClient $client,
+    ) {
+    }
 
     public function presetIndex(string $directory_id): array
     {
-        return self::http()->applicationRequest('GET', 'directories/' . $directory_id . '/presets', tenantId: $this->tenantId());
+        return $this->client->userRequest('GET', 'directories/' . $directory_id . '/presets');
     }
 
     public function presetStore(string $directory_id, array $data): array
     {
-        return self::http()->applicationRequest(
+        return $this->client->userRequest(
             'POST',
             'directories/' . $directory_id . '/presets',
-            payload: $data,
-            tenantId: $this->tenantId()
+            payload: $data
         );
     }
 
     public function presetDelete(string $directory_id, string $preset_id): ?array
     {
-        return self::http()->applicationRequest(
+        return $this->client->userRequest(
             'DELETE',
-            'directories/' . $directory_id . '/presets/' . $preset_id,
-            tenantId: $this->tenantId()
+            'directories/' . $directory_id . '/presets/' . $preset_id
         );
     }
 
     public function presetShow(string $directory_id, string $preset_id): array
     {
-        return self::http()->applicationRequest(
+        return $this->client->userRequest(
             'GET',
-            'directories/' . $directory_id . '/presets/' . $preset_id,
-            tenantId: $this->tenantId()
+            'directories/' . $directory_id . '/presets/' . $preset_id
         );
     }
 
     public function presetUpdate(string $directory_id, string $preset_id, array $data): array
     {
-        return self::http()->applicationRequest(
+        return $this->client->userRequest(
             'PUT',
             'directories/' . $directory_id . '/presets/' . $preset_id,
-            payload: $data,
-            tenantId: $this->tenantId()
+            payload: $data
         );
     }
 }

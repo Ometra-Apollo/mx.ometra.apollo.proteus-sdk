@@ -2,35 +2,35 @@
 
 namespace Ometra\Apollo\Proteus\Api;
 
-use Ometra\Caronte\Api\BaseApiClient;
-use Ometra\Apollo\Proteus\Api\Concerns\ResolvesProteusTenant;
-
-class CategoriesApi extends BaseApiClient
+class CategoriesApi
 {
-    use ResolvesProteusTenant;
+    public function __construct(
+        protected ProteusApiClient $client,
+    ) {
+    }
 
     public function categoriesIndex(): array
     {
-        return self::http()->applicationRequest('GET', 'categories', tenantId: $this->tenantId());
+        return $this->client->applicationRequest('GET', 'categories');
     }
 
     public function categoryStore(array $data): array
     {
-        return self::http()->applicationRequest('POST', 'categories', payload: $data, tenantId: $this->tenantId());
+        return $this->client->applicationRequest('POST', 'categories', payload: $data);
     }
 
     public function categoryUpdate(string $id, array $data): array
     {
-        return self::http()->applicationRequest('PUT', 'categories/' . $id, payload: $data, tenantId: $this->tenantId());
+        return $this->client->applicationRequest('PUT', 'categories/' . $id, payload: $data);
     }
 
     public function categoryDelete(string $id): ?array
     {
-        return self::http()->applicationRequest('DELETE', 'categories/' . $id, tenantId: $this->tenantId());
+        return $this->client->applicationRequest('DELETE', 'categories/' . $id);
     }
 
     public function categoryShow(string $id): array
     {
-        return self::http()->applicationRequest('GET', 'categories/' . $id, tenantId: $this->tenantId());
+        return $this->client->applicationRequest('GET', 'categories/' . $id);
     }
 }

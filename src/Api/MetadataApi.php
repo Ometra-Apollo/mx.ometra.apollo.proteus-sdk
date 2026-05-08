@@ -2,40 +2,45 @@
 
 namespace Ometra\Apollo\Proteus\Api;
 
-use Ometra\Caronte\Api\BaseApiClient;
-use Ometra\Apollo\Proteus\Api\Concerns\ResolvesProteusTenant;
-
-class MetadataApi extends BaseApiClient
+class MetadataApi
 {
-    use ResolvesProteusTenant;
+    public function __construct(
+        protected ProteusApiClient $client,
+    ) {
+    }
 
     public function metadataKeys(string $key): array
     {
-        return self::http()->applicationRequest('GET', 'media/metadata/' . $key, tenantId: $this->tenantId());
+        return $this->client->applicationRequest('GET', 'media/metadata/' . $key);
     }
 
     public function metadataValuesFromKey(string $key): array
     {
-        return self::http()->applicationRequest('GET', 'media/metadata/' . $key . '/values', tenantId: $this->tenantId());
+        return $this->client->applicationRequest('GET', 'media/metadata/' . $key . '/values');
+    }
+
+    public function metadataIndex(string $id, array $data = []): array
+    {
+        return $this->client->userRequest('GET', 'media/' . $id . '/metadata', query: $data);
     }
 
     public function metadataShow(string $id, string $key): array
     {
-        return self::http()->applicationRequest('GET', 'media/' . $id . '/metadata/' . $key, tenantId: $this->tenantId());
+        return $this->client->userRequest('GET', 'media/' . $id . '/metadata/' . $key);
     }
 
     public function metadataStore(string $id, array $data): array
     {
-        return self::http()->applicationRequest('POST', 'media/' . $id . '/metadata', payload: $data, tenantId: $this->tenantId());
+        return $this->client->userRequest('POST', 'media/' . $id . '/metadata', payload: $data);
     }
 
     public function metadataUpdate(string $id, array $data): array
     {
-        return self::http()->applicationRequest('PUT', 'media/' . $id . '/metadata', payload: $data, tenantId: $this->tenantId());
+        return $this->client->userRequest('PUT', 'media/' . $id . '/metadata', payload: $data);
     }
 
     public function metadataDelete(string $id, string $key): ?array
     {
-        return self::http()->applicationRequest('DELETE', 'media/' . $id . '/metadata/' . $key, tenantId: $this->tenantId());
+        return $this->client->userRequest('DELETE', 'media/' . $id . '/metadata/' . $key);
     }
 }

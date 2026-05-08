@@ -8,6 +8,7 @@ use Ometra\Apollo\Proteus\Api\MediaApi;
 use Ometra\Apollo\Proteus\Api\PresetsApi;
 use Ometra\Apollo\Proteus\Api\MetadataApi;
 use Ometra\Apollo\Proteus\Api\CategoriesApi;
+use Ometra\Apollo\Proteus\Api\ProteusApiClient;
 use Ometra\Apollo\Proteus\Api\DirectoriesApi;
 
 /**
@@ -33,6 +34,7 @@ class ProteusServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(self::CONFIG_PATH, 'proteus');
 
+        $this->app->singleton(ProteusApiClient::class);
         $this->app->singleton(MediaApi::class);
         $this->app->singleton(MetadataApi::class);
         $this->app->singleton(CategoriesApi::class);
