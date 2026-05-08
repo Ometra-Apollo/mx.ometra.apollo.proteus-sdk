@@ -1,24 +1,31 @@
 {
   "name": "ometra/proteus-client",
   "description": "Proteus API adapter",
-  "version": "1.0.1",
   "type": "library",
   "license": "MIT",
   "require": {
-    "php": "^8.0",
-    "equidna/laravel-toolkit": ">=1.0.0",
+    "php": "^8.2",
     "league/flysystem-aws-s3-v3": "^3.0",
-    "illuminate/support": "^10.0 || ^11.0 || ^12.0",
-    "guzzlehttp/guzzle": "^7.0",
-    "laravel/framework": "^11.0 || ^12.0"
+    "illuminate/database": "^12.0",
+    "illuminate/http": "^12.0",
+    "illuminate/routing": "^12.0",
+    "illuminate/support": "^12.0",
+    "guzzlehttp/guzzle": "^7.9",
+    "ometra/caronte-sdk": "^3.2"
   },
   "autoload": {
     "psr-4": {
       "Ometra\\Apollo\\Proteus\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Ometra\\Apollo\\Proteus\\Tests\\": "tests/"
+    }
+  },
   "scripts": {
-    "post-autoload-dump": []
+    "post-autoload-dump": [],
+    "test": "phpunit"
   },
   "extra": {
     "laravel": {
@@ -26,5 +33,8 @@
         "Ometra\\Apollo\\Proteus\\Providers\\ProteusServiceProvider"
       ]
     }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "11.5.55"
   }
 }
