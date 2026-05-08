@@ -21,10 +21,6 @@ class ProteusServiceProvider extends ServiceProvider
 {
     private const CONFIG_PATH = __DIR__ . '/../../config/proteus.php';
 
-    private const MIGRATIONS_PATH = __DIR__ . '/../../database/migrations';
-
-    private const ROUTES_PATH = __DIR__ . '/../../routes/proteus.php';
-
     /**
      * Registra los bindings del cliente de Proteus como singleton.
      *
@@ -61,15 +57,8 @@ class ProteusServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->loadMigrationsFrom(self::MIGRATIONS_PATH);
-        $this->loadRoutesFrom(self::ROUTES_PATH);
-
         $this->publishes([
             self::CONFIG_PATH => config_path('proteus.php'),
         ], 'proteus-config');
-
-        $this->publishes([
-            self::MIGRATIONS_PATH => database_path('migrations'),
-        ], 'proteus-migrations');
     }
 }

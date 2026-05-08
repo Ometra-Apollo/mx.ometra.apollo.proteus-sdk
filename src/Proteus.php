@@ -35,7 +35,7 @@ use Ometra\Apollo\Proteus\Api\DirectoriesApi;
  * @method array metadataStore(string $id, array $data)
  * @method array metadataUpdate(string $id, array $data)
  * @method array|null metadataDelete(string $id, string $key)
- * @method array categoriesIndex()
+ * @method array categoriesIndex(array $data = [])
  * @method array categoryStore(array $data)
  * @method array categoryUpdate(string $id, array $data)
  * @method array|null categoryDelete(string $id)

@@ -10,9 +10,11 @@ Every request must be application-authenticated through Caronte:
 | --- | --- | --- |
 | `X-Application-Token` | Yes | `caronte-sdk` application token. |
 | `X-Tenant-Id` | Yes | Current BeeHive `TenantContext`. |
-| `X-User-Token` | Optional | Current Caronte user token when the operation must run as a user. |
+| `X-User-Token` | Conditional | Current Caronte user token when the operation must run as a user. |
 
 `uri_user` is not part of the API contract. Proteus ignores it as a request input.
+User-authenticated SDK calls send `X-Tenant-Id` from the active BeeHive `TenantContext`.
+Uploads with `UploadedFile` payloads are sent as multipart requests.
 
 ## SDK Coverage
 

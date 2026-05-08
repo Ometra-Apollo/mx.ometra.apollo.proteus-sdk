@@ -9,9 +9,9 @@ class CategoriesApi
     ) {
     }
 
-    public function categoriesIndex(): array
+    public function categoriesIndex(array $data = []): array
     {
-        return $this->client->applicationRequest('GET', 'categories');
+        return $this->client->applicationRequest('GET', 'categories', query: $data);
     }
 
     public function categoryStore(array $data): array
