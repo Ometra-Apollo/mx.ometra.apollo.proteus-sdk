@@ -11,7 +11,7 @@
     "illuminate/routing": "^12.0",
     "illuminate/support": "^12.0",
     "guzzlehttp/guzzle": "^7.9",
-    "ometra/caronte-sdk": "^3.2"
+    "ometra/caronte-sdk": "^4.0"
   },
   "autoload": {
     "psr-4": {
